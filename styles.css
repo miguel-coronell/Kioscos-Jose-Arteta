@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+    
+:root {
+    --olive: #556B2F;
+    --olive-light: #7b9449;
+    --olive-dark: #3e4f22;
+    --olive-soft: #f4f7ed;
+    --slate: #1e293b;
+    --slate-light: #64748b;
+    --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+body { 
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg-gradient);
+    color: var(--slate);
+    overscroll-behavior-y: none; /* Evita rebote en móviles */
+}
+
+/* Scrollbar Personalizado para PC */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--olive-light); }
+
+/* Campos de Formulario Mejorados */
+.input-dynamic, select, textarea {
+    background-color: #ffffff !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 16px !important;
+    padding: 0.9rem 1.2rem !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    outline: none !important;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01);
+    width: 100%;
+    box-sizing: border-box;
+    font-weight: 600;
+    color: var(--slate);
+}
+
+.input-dynamic:hover, select:hover, textarea:hover {
+    border-color: #cbd5e1 !important;
+    transform: translateY(-1px);
+}
+
+.input-dynamic:focus, select:focus, textarea:focus {
+    border-color: var(--olive) !important;
+    box-shadow: 0 0 0 5px rgba(85, 107, 47, 0.15) !important;
+    transform: translateY(-2px);
+    background-color: #fff !important;
+}
+
+/* Ajuste específico plugin Teléfono */
+.iti { width: 100%; }
+#c_tel { padding-left: 55px !important; }
+
+/* Botones Principales y Efectos Hover Dinámicos */
+.btn-primary {
+    background: linear-gradient(135deg, var(--olive), var(--olive-dark));
+    color: white;
+    border-radius: 20px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 20px -5px rgba(85, 107, 47, 0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, var(--slate), #0f172a);
+    color: white;
+    border-radius: 20px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 20px -5px rgba(30, 41, 59, 0.4);
+}
+
+.hover-dynamic:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.hover-dynamic:active {
+    transform: translateY(1px) scale(0.98);
+}
+
+/* Tarjetas (Glassmorphism sutil) */
+.glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 1);
+    border-radius: 28px;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+/* Navegación Móvil */
+.tab-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    color: #94a3b8;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-radius: 20px;
+    width: 60px;
+    height: 60px;
+    position: relative;
+}
+
+.tab-btn.active {
+    color: var(--olive);
+    background: var(--olive-soft);
+    transform: translateY(-10px);
+    box-shadow: 0 10px 15px -3px rgba(85, 107, 47, 0.1);
+}
+
+/* Navegación Desktop */
+.tab-btn-desktop {
+    position: relative;
+    overflow: hidden;
+}
+.tab-btn-desktop.active {
+    background: var(--olive-soft);
+    color: var(--olive);
+    border-right: 4px solid var(--olive);
+}
+
+/* Gestión de Secciones y Animaciones */
+.app-section { display: none; opacity: 0; }
+.active-section { 
+    display: block; 
+    animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeSlideUp {
+    0% { opacity: 0; transform: translateY(30px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Lienzo de Firma */
+#signaturePad {
+    background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+    background-size: 20px 20px;
+    touch-action: none; /* Crucial para dibujar en móviles */
+}
