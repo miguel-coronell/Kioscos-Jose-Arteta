@@ -466,7 +466,7 @@ async function generarPDF() {
     
     // Columna A
     doc.setFont(undefined, 'bold'); doc.text("Identificación:", 15, 68);
-    doc.setFont(undefined, 'normal'); doc.text(document.getElementById('c_nit').value || "N/A", 40, 68);
+    doc.setFont(undefined, 'normal'); doc.text(document.getElementById('c_nit').value || "", 40, 68);
     
     doc.setFont(undefined, 'bold');
     doc.text("Proyecto / Obra:", 15, 73);
@@ -478,9 +478,9 @@ async function generarPDF() {
     doc.setFont(undefined, 'normal'); doc.text(iti.getNumber(), 125, 68);
 
     doc.setFont(undefined, 'bold'); doc.text("Email:", 110, 73);
-    doc.setFont(undefined, 'normal'); doc.text(d.email || "N/A", 125, 73);
+    doc.setFont(undefined, 'normal'); doc.text(d.email || "", 125, 73);
     
-    let currentY = 88;
+    let currentY = 80;
 
     // Extractor de Datos para Tablas
     const extractTableData = (id) => {
@@ -549,20 +549,30 @@ async function generarPDF() {
     // Verificación inteligente de espacio para los totales
     if (currentY > 220) { doc.addPage(); currentY = 20; }
 
-    // 1. RECUADRO DE TOTALES Y CONDICIONES
+   // 1. RECUADRO DE TOTALES Y CONDICIONES
     doc.setFillColor(248, 250, 252);
     doc.setDrawColor(226, 232, 240);
-    doc.roundedRect(15, currentY, 180, 22, 3, 3, 'FD');
+    // Aumentamos la altura a 30 para que quepan las nuevas líneas
+    doc.roundedRect(15, currentY, 180, 30, 3, 3, 'FD');
     
     doc.setFontSize(7.5); doc.setTextColor(100); doc.setFont(undefined, 'bold');
     doc.text("NOTAS Y CONDICIONES:", 20, currentY + 7);
     
     doc.setFont(undefined, 'normal');
-    doc.text(`• ${document.getElementById('label-tiempo').innerText}: ${document.getElementById('c_garantia').value} Días.`, 20, currentY + 13);
+    // Línea 1: Garantía
+    doc.text(`• ${document.getElementById('label-tiempo').innerText}: ${document.getElementById('c_garantia').value} Días.`, 20, currentY + 12);
     
+    // Línea 2: Moneda local
+    doc.text("• Los valores expresados están en moneda local (COP).", 20, currentY + 16);
+    
+    // Línea 3: Disponibilidad
+    doc.text("• Sujeto a disponibilidad de inventario y agenda técnica.", 20, currentY + 20);
+    
+    // Línea 4: Anticipo (Si está marcado)
     if(document.getElementById('chk_anticipo').checked) {
-        doc.text(`• Inicio: Anticipo de ${document.getElementById('monto_anticipo_final').innerText}`, 20, currentY + 17);
+        doc.text(`• Inicio: Anticipo de ${document.getElementById('monto_anticipo_final').innerText}`, 20, currentY + 24);
     }
+
 
     // Columna Derecha: Total General
     doc.setFillColor(...colorOlive);
@@ -575,7 +585,7 @@ async function generarPDF() {
     doc.setFontSize(11);
     doc.text(document.getElementById('finalTotal').innerText, 186, currentY + 15, {align: 'right'});
 
-    currentY += 35;
+    currentY += 45;
     
     // 2. SECCIÓN DE FIRMAS
     doc.setDrawColor(200); doc.setLineWidth(0.2);
@@ -644,6 +654,41 @@ async function generarPDF() {
             
             photoY += 70;
         });
+    }
+
+// ==========================================
+    // AGREGAR ESTO JUSTO ANTES DE doc.save(...)
+    // ==========================================
+
+    // Obtenemos el total de páginas generadas
+    const pageCount = doc.internal.getNumberOfPages();
+    
+    for (let i = 1; i <= pageCount; i++) {
+        // Nos movemos a la página actual del bucle
+        doc.setPage(i);
+        
+        // --- 1. MARCA DE AGUA ---
+        // Verificamos que tu variable LOGO_BASE64 exista (ya la tienes en tu script)
+        if (LOGO_BASE64) {
+            // Bajamos la opacidad al 10% (0.1) para que no tape el texto
+            doc.setGState(new doc.GState({opacity: 0.1}));
+            
+            // Dibujamos el logo en el centro de la página A4 (210 x 297 mm)
+            // Ajusta los valores 55 (X), 100 (Y), 100 (Ancho), 100 (Alto) según tu logo
+            doc.addImage(LOGO_BASE64, 'PNG', 55, 100, 100, 100);
+            
+            // Restauramos la opacidad al 100% (1.0) para no dañar nada más
+            doc.setGState(new doc.GState({opacity: 1.0}));
+        }
+
+        // --- 2. NUMERACIÓN DE PÁGINAS ---
+        doc.setFontSize(8);
+        doc.setTextColor(150); // Un gris claro
+        doc.setFont(undefined, 'normal');
+        
+        // Escribimos "Página X de Y" en la parte inferior central
+        // X: 105 (mitad de 210), Y: 290 (casi al final de la hoja de 297)
+        doc.text(`Página ${i} de ${pageCount}`, 105, 290, { align: 'center' });
     }
 
     doc.save(`${tipoDoc}_${document.getElementById('c_nombre').value.replace(/\s+/g, '_')}.pdf`);
